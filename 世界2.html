@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>🌍 我的地球体检单 | 行星体检中心</title>
+    <!-- html2canvas 库：用于生成海报截图 -->
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <!-- Font Awesome 6 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #c8e8e9 0%, #b0d4d8 100%);
+            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, 'Roboto', sans-serif;
+            padding: 20px 16px 40px;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            max-width: 550px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 48px 48px 40px 40px;
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            backdrop-filter: blur(2px);
+        }
+
+        .hero {
+            background: #2c5f2d;
+            background-image: radial-gradient(circle at 10% 30%, #3e7c3f, #1f3e20);
+            padding: 28px 20px 24px;
+            text-align: center;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .hero p {
+            margin-top: 10px;
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .quiz-panel, .result-panel {
+            padding: 28px 22px;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 32px;
+            padding: 18px 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2f0e2;
+        }
+
+        .question-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #1d3e1d;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f9fef7;
+            padding: 10px 16px;
+            border-radius: 60px;
+            border: 1px solid #d0e2c6;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .option:hover {
+            background: #e6f3e0;
+        }
+
+        input[type="radio"] {
+            accent-color: #2c5f2d;
+            width: 18px;
+            height: 18px;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .option label {
+            flex: 1;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #2c3e2b;
+            cursor: pointer;
+        }
+
+        .btn {
+            background: #f4a261;
+            border: none;
+            padding: 14px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 60px;
+            width: 100%;
+            color: #2c2c2c;
+            margin-top: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #2c5f2d;
+            color: white;
+            box-shadow: 0 8px 16px rgba(44, 95, 45, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #1e451f;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #e9c46a;
+            color: #2d3e2a;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #2c5f2d;
+            color: #2c5f2d;
+        }
+
+        .action-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 20px 0 12px;
+        }
+
+        .action-group .btn {
+            flex: 1;
+            margin-top: 0;
+            font-size: 0.85rem;
+        }
+
+        .poster {
+            background: #fffef7;
+            border-radius: 48px;
+            padding: 24px 20px;
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            border: 2px solid #ffe5b4;
+        }
+
+        .diagnosis {
+            text-align: center;
+        }
+
+        .rating-badge {
+            background: #f4e3b1;
+            display: inline-block;
+            padding: 8px 24px;
+            border-radius: 60px;
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: #5e3a1c;
+            margin-bottom: 12px;
+        }
+
+        .index-box {
+            background: #e0f0e0;
+            border-radius: 32px;
+            padding: 12px;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .index-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #c4450c;
+        }
+
+        .slogan {
+            font-style: italic;
+            background: #fef2da;
+            padding: 14px;
+            border-radius: 28px;
+            margin: 15px 0;
+            font-weight: 500;
+            border-left: 6px solid #f4a261;
+        }
+
+        .prescription {
+            background: #e7f2fa;
+            border-radius: 28px;
+            padding: 16px;
+            margin: 15px 0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            text-align: left;
+        }
+
+        .footer-qr {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 18px;
+            border-top: 2px dashed #cfe3cf;
+            padding-top: 16px;
+        }
+
+        .qr-sim {
+            background: #222;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            color: white;
+            font-size: 28px;
+            background: radial-gradient(circle at 30% 30%, #2c5f2d, #1b3b1c);
+        }
+
+        .org {
+            font-size: 0.7rem;
+            color: #4f6b4a;
+            text-align: right;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .error-msg {
+            background: #ffdddd;
+            border-radius: 30px;
+            padding: 10px;
+            text-align: center;
+            margin-top: 12px;
+            color: #b33;
+            font-weight: 500;
+        }
+
+        @media (max-width: 480px) {
+            .quiz-panel, .result-panel {
+                padding: 20px 16px;
+            }
+            .rating-badge {
+                font-size: 1rem;
+                padding: 5px 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container" id="app">
+    <div class="hero">
+        <h1><i class="fas fa-stethoscope"></i> 我的“地球体检单” <i class="fas fa-globe-asia"></i></h1>
+        <p>🌱 测测你的生活习惯，给地球做一次趣味诊断 🌱</p >
+    </div>
+
+    <!-- 问卷区域 -->
+    <div id="quizArea" class="quiz-panel">
+        <div id="questionsContainer"></div>
+        <button id="submitQuizBtn" class="btn btn-primary"><i class="fas fa-file-alt"></i> 生成专属体检报告</button>
+        <div id="quizError" class="error-msg hidden"></div>
+    </div>
+
+    <!-- 结果区域 -->
+    <div id="resultArea" class="result-panel hidden">
+        <div id="posterContainer" class="poster"></div>
+        <div class="action-group">
+            <button id="shareBtn" class="btn btn-secondary"><i class="fab fa-weixin"></i> 分享朋友圈</button>
+            <button id="lotteryBtn" class="btn btn-secondary"><i class="fas fa-gift"></i> 现场抽奖</button>
+            <button id="reTakeBtn" class="btn btn-outline"><i class="fas fa-redo-alt"></i> 重新体检</button>
+        </div>
+        <button id="savePosterBtn" class="btn btn-primary"><i class="fas fa-camera"></i> 保存海报图片</button>
+        <p style="font-size: 12px; text-align: center; margin-top: 16px; color: #4a6741;"><i class="fas fa-share-alt"></i> 分享海报到朋友圈，即可参与抽奖！</p >
+    </div>
+</div>
+
+<script>
+    // ---------- 新版题目库（共6题，完全按照用户要求）----------
+    const QUESTIONS = [
+        {
+            text: "🥡 你每周点几次外卖？会选“无需餐具”吗？",
+            icon: "fa-box-open",
+            type: "plastic",
+            options: [
+                { text: "A. 0次，我爱食堂", score: 3, badge: "地球优先客户：塑料足迹≈0" },
+                { text: "B. 1-3次，必选无需餐具", score: 2, badge: "环保优等生：你的汤勺拯救了海龟" },
+                { text: "C. 4-7次，偶尔忘记选", score: 1, badge: "塑料依赖观察者：下周试试自带餐具？" },
+                { text: "D. 每天≥2次，且要餐具", score: 0, badge: "外卖黑洞：你贡献的餐具盒能堆满教室" }
+            ],
+            funFact: "你点的奶茶杯连起来可绕操场X圈"  // 趣味报告文案模板
+        },
+        {
+            text: "🚗 日常通勤/上课主要靠？",
+            icon: "fa-car-side",
+            type: "transport",
+            options: [
+                { text: "A. 步行/单车", score: 3, badge: "碳排标兵：双脚发电，0污染" },
+                { text: "B. 地铁/公交", score: 2, badge: "低碳旅行者：一车满载更环保" },
+                { text: "C. 网约车/私家车", score: 0, badge: "舒适圈达人：你的碳排够北极熊游1小时" },
+                { text: "D. 电驴/摩托", score: 1, badge: "灵活穿梭者：电池处理要留心哦" }
+            ],
+            funFact: "你的年度通勤碳排放 ≈ 种X棵树才能抵消"
+        },
+        {
+            text: "🚿 你洗澡洗多久？",
+            icon: "fa-shower",
+            type: "water",
+            options: [
+                { text: "A. 5分钟战斗澡", score: 3, badge: "节水冠军：你是沙漠里的绿洲" },
+                { text: "B. 10-15分钟", score: 2, badge: "正常居民用水量" },
+                { text: "C. 20分钟+听歌", score: 0, badge: "水疗爱好者：节约25L水可让非洲小孩喝一周" }
+            ],
+            funFact: "你一年洗澡用掉的水 ≈ X个标准游泳池"
+        },
+        {
+            text: "🥤 买饮料时你的选择？",
+            icon: "fa-cup-straw",
+            type: "shopping",
+            options: [
+                { text: "A. 自带杯", score: 3, badge: "减塑先锋：直接给地球打折" },
+                { text: "B. 买瓶装，会回收", score: 2, badge: "可回收公民：垃圾分类大师" },
+                { text: "C. 随手买瓶装", score: 0, badge: "一次性依赖者：每个瓶子都在海洋漂流500年" }
+            ],
+            funFact: "每年丢弃的塑料瓶连起来可绕地球半圈"
+        },
+        {
+            text: "📱 你存了多少没用的截图/文件？",
+            icon: "fa-database",
+            type: "digital",
+            options: [
+                { text: "A. 定期清理", score: 3, badge: "数字极简主义者：云端的空气净化器" },
+                { text: "B. 偶尔删", score: 2, badge: "普通网民" },
+                { text: "C. 1万+张，从不删", score: 0, badge: "数据囤积狂：你的相册耗电够烧10吨煤" }
+            ],
+            funFact: "你随手删掉1G垃圾文件 = 省电0.2度"
+        },
+        {
+            text: "📱 你多久换一次手机？（花式拷问）",
+            icon: "fa-mobile-alt",
+            type: "phone",
+            options: [
+                { text: "A. 用到报废", score: 3, badge: "电子永动机：真正的环保战士" },
+                { text: "B. 2-3年", score: 2, badge: "正常更新频率" },
+                { text: "C. 出新必换", score: 0, badge: "科技发烧友：每部新手机背后有60种矿物被开采" }
+            ],
+            funFact: "每部智能手机的制造碳排 ≈ 充电2000次"
+        }
+    ];
+
+    // 处方库（根据类型给出针对性建议）
+    const PRESCRIPTION_MAP = {
+        plastic: "🥡 试试每周少点2次外卖，并且坚持选「无需餐具」，塑料足迹大减！",
+        transport: "🚲 每周两天改用步行/公交，减碳又健康，让北极熊多一块浮冰。",
+        water: "💧 洗澡提速3分钟，一年省下的水能填满一个小型游泳池！",
+        shopping: "🧴 随身带个水杯，每次自带杯减塑又省钱，地球给你点赞。",
+        digital: "🗑️ 每月清理一次手机相册和废文件，云端省电，地球降温。",
+        phone: "📱 延长手机使用周期，旧手机回收或转赠，减少电子垃圾。"
+    };
+
+    // 存储用户答案与总分
+    let userAnswers = [];       // 每个元素: { score, type, selectedText, selectedIndex, questionIndex, badgeText }
+    let totalScore = 0;
+    let worstType = null;       // 得分最低的问题类型
+    let worstScoreVal = 3;      // 用于找最低分
+    let worstQuestionIndex = -1; // 记录最差题目的索引，用于展示趣味报告
+
+    // DOM 元素
+const quizArea = document.getElementById('quizArea');
+    const resultArea = document.getElementById('resultArea');
+    const questionsContainer = document.getElementById('questionsContainer');
+    const submitBtn = document.getElementById('submitQuizBtn');
+    const quizErrorDiv = document.getElementById('quizError');
+    const posterContainer = document.getElementById('posterContainer');
+    const shareBtn = document.getElementById('shareBtn');
+    const lotteryBtn = document.getElementById('lotteryBtn');
+    const reTakeBtn = document.getElementById('reTakeBtn');
+    const savePosterBtn = document.getElementById('savePosterBtn');
+
+    // 渲染问卷
+    function renderQuestions() {
+        let html = '';
+        QUESTIONS.forEach((q, idx) => {
+            html += `
+                <div class="question-card" data-qidx="${idx}">
+                    <div class="question-text">
+                        <i class="fas ${q.icon}"></i> ${q.text}
+                    </div>
+                    <div class="options" id="options-${idx}">
+            `;
+            q.options.forEach((opt, optIdx) => {
+                html += `
+                    <div class="option" data-optidx="${optIdx}">
+                        <input type="radio" name="q${idx}" value="${optIdx}" id="q${idx}_opt${optIdx}">
+                        <label for="q${idx}_opt${optIdx}">${opt.text}</label>
+                    </div>
+                `;
+            });
+            html += `</div></div>`;
+        });
+        questionsContainer.innerHTML = html;
+    }
+
+    // 收集答案并计算总分、最差项、趣味报告素材
+    function collectAnswers() {
+        userAnswers = [];
+        totalScore = 0;
+        worstScoreVal = 3;
+        worstType = null;
+        worstQuestionIndex = -1;
+
+        for (let i = 0; i < QUESTIONS.length; i++) {
+            const radios = document.querySelectorAll(`input[name="q${i}"]`);
+            let selectedValue = null;
+            for (let r of radios) {
+                if (r.checked) {
+                    selectedValue = parseInt(r.value);
+                    break;
+                }
+            }
+            if (selectedValue === null) {
+                return false; // 有未答题目
+            }
+            const q = QUESTIONS[i];
+            const opt = q.options[selectedValue];
+            const score = opt.score;
+            const type = q.type;
+            const badgeText = opt.badge;
+            totalScore += score;
+            userAnswers.push({
+                score: score,
+                type: type,
+                selectedText: opt.text,
+                selectedIndex: selectedValue,
+                questionIndex: i,
+                badgeText: badgeText,
+                funFactTemplate: q.funFact
+            });
+
+            // 找出最低分（最不环保）的题目，如果同分保留第一个出现的
+            if (score < worstScoreVal) {
+                worstScoreVal = score;
+                worstType = type;
+                worstQuestionIndex = i;
+            }
+        }
+        // 兜底：如果所有题目满分，默认取第一个类型作为处方参考
+        if (worstType === null) {
+            worstType = QUESTIONS[0].type;
+            worstQuestionIndex = 0;
+        }
+        return true;
+    }
+
+    // 根据总分生成评级、关联指数、slogan
+    function getRatingByScore(score) {
+        const maxScore = 18;  // 6题每题最高3分
+        const percent = (score / maxScore) * 100;
+        let rating = "";
+        if (percent >= 80) rating = "🌿 地球友好型人类 🌿";
+        else if (percent >= 60) rating = "🍃 轻度依赖观察者 🍃";
+        else if (percent >= 40) rating = "⚠️ 隐形的碳排大户 ⚠️";
+        else rating = "🔥 地球急救信号 🔥";
+        
+        let threatIndex = Math.floor(100 - percent);
+        threatIndex = Math.min(99, Math.max(1, threatIndex));
+        let slogan = "";
+        if (percent >= 80) slogan = "🎉 感谢您为地球呼吸做出的每一次绿色选择！您就是超级英雄！";
+        else if (percent >= 60) slogan = "🌱 还不错喔！再努力一点，地球会因你更美好～";
+        else if (percent >= 40) slogan = "🌍 您的习惯正在让地球‘低烧’，从今天起做个轻量改造吧！";
+        else slogan = "💔 地球正在呼救！您的习惯急需调整，别担心，处方已开好！";
+        
+        return { rating, threatIndex, slogan, ecoPercent: Math.floor(percent) };
+    }
+
+    // 获取处方文案
+    function getPrescription() {
+        if (worstType && PRESCRIPTION_MAP[worstType]) {
+            return PRESCRIPTION_MAP[worstType];
+        }
+        return "✨ 每天一个减碳小行动，汇聚绿色大能量！";
+    }
+
+    // 生成最差题目对应的趣味报告文案（将模板中的X替换为幽默数值）
+    function getFunnyReportText() {
+        if (worstQuestionIndex === -1) return "🌍 你的每个小习惯都在影响地球，一起行动吧！";
+        const worstQ = QUESTIONS[worstQuestionIndex];
+        const template = worstQ.funFact;
+        // 根据题目类型生成随机/有趣的数字（增加真实感）
+        let dynamicValue = "";
+        switch (worstQ.type) {
+            case "plastic":
+                const cups = Math.floor(Math.random() * 20) + 5;
+                dynamicValue = template.replace("X", cups);
+                break;
+            case "transport":
+                const trees = Math.floor(Math.random() * 15) + 3;
+                dynamicValue = template.replace("X", trees);
+                break;
+            case "water":
+                const pools = (Math.random() * 1.5 + 0.2).toFixed(1);
+                dynamicValue = template.replace("X", pools);
+                break;
+            case "digital":
+                dynamicValue = template; // 直接显示原文（已经有数字0.2度）
+                break;
+            default:
+                dynamicValue = template.replace("X", Math.floor(Math.random() * 10) + 1);
+        }
+        // 额外加上选项本身的徽章文案（用户选择的那个最差行为的具体评价）
+        const selectedBadge = userAnswers[worstQuestionIndex]?.badgeText || "";
+        return `${selectedBadge}<br>📊 ${dynamicValue}`;
+    }
+
+    // 生成海报HTML
+function generatePosterHtml() {
+        const { rating, threatIndex, slogan, ecoPercent } = getRatingByScore(totalScore);
+        const prescriptionText = getPrescription();
+        const funnyReport = getFunnyReportText();
+        return `
+            <div class="diagnosis">
+                <div class="rating-badge"><i class="fas fa-heartbeat"></i> ${rating}</div>
+                <div class="index-box">
+                    <span style="font-weight:bold;">🐻‍❄️ 与北极熊冰面关联度</span><br>
+                    <span class="index-value">${threatIndex}%</span>
+                    <span style="font-size:0.8rem;">（越高代表你的习惯越让北极熊心慌）</span>
+                </div>
+                <div class="slogan">
+                    <i class="fas fa-comment-dots"></i> ${slogan}
+                </div>
+                <div style="background:#f4f0e1; border-radius: 20px; padding: 10px; font-size:0.9rem; margin: 10px 0; text-align:center;">
+                    🌟 地球友好指数: ${ecoPercent}%  🌟<br>
+                    <span style="font-size:12px;">✨ ${funnyReport}</span>
+                </div>
+                <div class="prescription">
+                    <i class="fas fa-clinic-medical"></i>
+                    <div><strong>📋 地球处方</strong><br>${prescriptionText}</div>
+                </div>
+            </div>
+            <div class="footer-qr">
+                <div class="qr-sim">
+                    <i class="fas fa-qrcode"></i>
+                </div>
+                <div class="org">
+                    🌐 扫码参与更多挑战<br>
+                    地球体检中心 · 环保青年行动<br>
+                    #我的地球体检单
+                </div>
+            </div>
+        `;
+    }
+
+    function showResult() {
+        const html = generatePosterHtml();
+        posterContainer.innerHTML = html;
+        quizArea.classList.add('hidden');
+        resultArea.classList.remove('hidden');
+    }
+
+    function onSubmit() {
+        quizErrorDiv.classList.add('hidden');
+        const valid = collectAnswers();
+        if (!valid) {
+            quizErrorDiv.innerText = "⚠️ 请先完成所有体检项目再生成报告哦！";
+            quizErrorDiv.classList.remove('hidden');
+            return;
+        }
+        showResult();
+    }
+
+    function resetQuiz() {
+        for (let i = 0; i < QUESTIONS.length; i++) {
+            const radios = document.querySelectorAll(`input[name="q${i}"]`);
+            radios.forEach(r => r.checked = false);
+        }
+        quizArea.classList.remove('hidden');
+        resultArea.classList.add('hidden');
+        quizErrorDiv.classList.add('hidden');
+        userAnswers = [];
+        totalScore = 0;
+        worstType = null;
+        worstQuestionIndex = -1;
+    }
+
+    function shareAction() {
+        if (navigator.share) {
+            navigator.share({
+                title: '我的地球体检单',
+                text: '快来看看我的地球健康诊断！超有趣~',
+                url: window.location.href,
+            }).catch(() => alert("📱 点击右上角分享给朋友吧！"));
+        } else {
+            alert("📸 请截图保存海报，分享到朋友圈后即可参与现场抽奖～");
+        }
+    }
+
+    // 新抽奖奖品：再来一次！谢谢参与；拇指多肉一个；海龟徽章一枚；地球贴纸一张
+    function doLottery() {
+        const prizes = [
+            "🎲 再来一次！谢谢参与",
+            "🌵 拇指多肉一个",
+            "🐢 海龟徽章一枚",
+            "🌍 地球贴纸一张"
+        ];
+        // 随机抽取，概率均等
+        const rand = Math.floor(Math.random() * prizes.length);
+        let msg = `🎉 恭喜抽中：${prizes[rand]} 🎉`;
+        if (prizes[rand].includes("谢谢参与")) {
+            msg = "🍀 很遗憾没中奖，分享海报就能再获得一次抽奖机会！🍀";
+        } else {
+            msg = `🎁 恭喜！${prizes[rand]} 请到活动现场领取～`;
+        }
+        alert(msg);
+    }
+
+    async function savePosterImage() {
+        const posterEl = document.getElementById('posterContainer');
+        if (!posterEl) return;
+        if (typeof html2canvas === 'undefined') {
+            alert("绘图库加载中，请稍后再试或截图保存。");
+            return;
+        }
+        try {
+            const canvas = await html2canvas(posterEl, { scale: 2, backgroundColor: '#fffef7' });
+            const link = document.createElement('a');
+            link.download = '地球体检报告.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            alert("✅ 海报已保存，快去分享朋友圈吧！");
+        } catch (err) {
+            console.error(err);
+            alert("生成图片失败，您可以手动截图保存～");
+        }
+    }
+
+    function bindEvents() {
+        if (submitBtn) submitBtn.addEventListener('click', onSubmit);
+        if (reTakeBtn) reTakeBtn.addEventListener('click', resetQuiz);
+        if (shareBtn) shareBtn.addEventListener('click', shareAction);
+        if (lotteryBtn) lotteryBtn.addEventListener('click', doLottery);
+        if (savePosterBtn) savePosterBtn.addEventListener('click', savePosterImage);
+    }
+
+    function init() {
+        renderQuestions();
+        bindEvents();
+        console.log("🌍 地球体检中心已启动，新题目版本来袭~");
+    }
+
+    init();
+</script>
+</body>
+</html>
+```
